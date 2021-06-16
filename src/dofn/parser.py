@@ -2,7 +2,7 @@
 This module some basic functionality for parsing different type of texts
 
 """
-
+import re
 import logging
 from typing import Tuple, Dict, Union, Iterable
 
@@ -50,18 +50,14 @@ def url_path_parser(url_path: str):
 
 def remove_html_tags(document: str = None) -> Union[str, None]:
     """Remove html tags from a string"""
-    if document:
-        import re
-        clean = re.compile('<.*?>')
-        return re.sub(clean, '', document)
+    match = re.compile('<.*?>')
+    return re.sub(match, '', document)
 
 
 def remove_special_characters(document: str = None) -> Union[str, None]:
     """ Remove non alphanumeric values """
-    if document:
-        import re
-        clean = re.compile(r"[^a-zA-Z0-9]+")
-        return re.sub(clean, ' ', document)
+    match = re.compile(r"[^a-zA-Z0-9]+")
+    return re.sub(match, ' ', document)
 
 
 class UrlParser(beam.DoFn):
