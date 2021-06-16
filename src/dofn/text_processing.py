@@ -60,15 +60,13 @@ class TextAnalyser(beam.DoFn):
         :param element:
         :return:
         """
-        document = element[self.feature_column]
-        id_value = element[self.id_column]
+        output = element.copy()
+        document = output[self.feature_column]
+        id_value = output[self.id_column]
         if document:
-            try:
-                element[self.feature_column] = remove_html_tags(document=document)
-                element[self.feature_column] = remove_special_characters(document=document)
-            except Exception as e:
-                logging.exception(f"{str(id_value)} special character removal exception: {e}")
-        return element
+           output[self.feature_column] = remove_html_tags(document=document)
+           output[self.feature_column] = remove_special_characters(document=document)
+        return output
 
     def prepare_document_ids_for_spacy(self, column, output):
         id_values = {elem[self.id_column]: elem for elem in output}
@@ -139,5 +137,3 @@ class TextAnalyser(beam.DoFn):
             for doc_processed in self.spacy_processing(element=self._batch, column=feature):
                 yield window.GlobalWindows.windowed_value(doc_processed)
         self._batch = []
-
-
